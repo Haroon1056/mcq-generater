@@ -3,6 +3,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.chains import SequentialChain
 import os
+import re
 from src.mcqgen.mcqgen import generate_evaluate_chain
 
 import json
@@ -29,16 +30,26 @@ def read_file(uploaded_file):
     else:
         return ""
 
-# Parse quiz string into table format
 def get_table_data(quiz_str):
     try:
         if isinstance(quiz_str, str):
             quiz_str = quiz_str.strip()
-            # Debug print: show raw output
-            st.text_area("🔍 Raw Quiz JSON String", quiz_str, height=150)
+            # st.text_area("🔍 Raw Quiz JSON String", quiz_str, height=150)
 
-            # Try parsing if it's a valid JSON string
-            return json.loads(quiz_str)
+            # Extract JSON from within code block or brackets
+            # First try: between ``` and ```
+            match = re.search(r"```(?:json)?\s*(\[.*?\])\s*```", quiz_str, re.DOTALL)
+            if not match:
+                # Fallback: find first [ and last ]
+                match = re.search(r"(\[.*\])", quiz_str, re.DOTALL)
+
+            if match:
+                json_str = match.group(1)
+                return json.loads(json_str)
+            else:
+                st.error("❌ JSON content not found in quiz string.")
+                return None
+
         elif isinstance(quiz_str, list):
             return quiz_str
         else:

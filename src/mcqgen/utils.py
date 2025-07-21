@@ -1,4 +1,5 @@
 import os
+import re
 import PyPDF2
 import json
 import traceback
@@ -23,18 +24,21 @@ def read_file(file):
 
 def get_table_data(quiz_str):
     try:
-        # convert the quiz from a str to dict:
-        quitz_dict = json.loads(quiz_str)
+        # Extract the JSON between triple backticks or curly braces
+        match = re.search(r"```(.*?)```", quiz_str, re.DOTALL)
+        if not match:
+            match = re.search(r"({.*})", quiz_str, re.DOTALL)
+        if not match:
+            raise ValueError("No JSON found in quiz string.")
+
+        json_str = match.group(1).strip()
+        quiz_dict = json.loads(json_str)
+
         quiz_table_data = []
-        
-        #iterate through the quiz dict and extract the data
-        for key, value in quitz_dict.items():
+        for key, value in quiz_dict.items():
             mcq = value['question']
             options = ' | '.join(
-                [
-                    f"{option}: {option_value}"
-                    for option, option_value in value['options'].items()
-                ]
+                [f"{opt}: {ans}" for opt, ans in value['options'].items()]
             )
             correct = value['answer']
             quiz_table_data.append({"MCQ": mcq, "Choices": options, "Correct": correct})

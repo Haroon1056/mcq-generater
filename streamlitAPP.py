@@ -40,7 +40,7 @@ def get_table_data(quiz_str):
             # First try: between ``` and ```
             match = re.search(r"```(?:json)?\s*(\[.*?\])\s*```", quiz_str, re.DOTALL)
             if not match:
-                # Fallback: find first [ and last ]
+                # Fallback: find first [ and last  ]
                 match = re.search(r"(\[.*\])", quiz_str, re.DOTALL)
 
             if match:

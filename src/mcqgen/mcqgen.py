@@ -1,4 +1,5 @@
 from langchain_huggingface import HuggingFaceEndpoint
+from langchain_groq import ChatGroq
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.chains import SequentialChain
@@ -12,13 +13,13 @@ import PyPDF2
 
 load_dotenv()
 
-key = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+key = os.getenv("GROQ_API_TOKEN")
 print(key)
 
-with open("C:\\Users\\Z\\Desktop\\End-to-End-Project\\mcqgen-project\\mcq-generater\\experiment\\Response.json", "r") as file:
-    RESPONSE_JSON = json.load(file)
-print(RESPONSE_JSON)
-    
+with open("C:\\Users\\Z\\Desktop\\End-to-End-Project\\mcqgen-project\\mcq-generater\\Response.json", "r") as file:
+    response_json = json.load(file)
+# print(response_json)
+
 prompt = PromptTemplate(
     input_variables=["text", "number", "subject", "tone", "response_json"],
     template="""
@@ -29,25 +30,27 @@ prompt = PromptTemplate(
     Make sure to format your response in JSON format with the following structure: ad use it as a guide:
     Ensure to make {number} MCQs
     ### Response json:
-    {RESPONSE_JSON}
+    {response_json}
     """
 )
 
-llm = HuggingFaceEndpoint(
-    repo_id="mistralai/Devstral-Small-2507",
-    temperature=0.7,
+llm = ChatGroq(
+    model="llama3-8b-8192",
+    api_key=key,
+    temperature=0.7
 )
 
 chain = LLMChain(llm=llm, prompt=prompt, output_key='quiz', verbose=True)
 
 template = """
-    Yor are an expert english grammarian and writer. Given a multiple choice quiz for {subject} students, it is your job to \
+    You are an expert english grammarian and writer. Given a multiple choice quiz for {subject} students, it is your job to \
     You need to evaluate the complexity of the questions and give a complete analysis of the quiz. Only use max 50 words.
     if the quiz is not at per with the cognitive and analytical abilities of the students, \
     update the quiz questions which need to be changed and change the tone such that is perfectly fits the students abilities.
     Quiz_MCQs: {quiz}
     Check from an expert english Writer of the above quiz:
     """
+# print(template)
     
 prompt2 = PromptTemplate(
     input_variables=["quiz", "subject"],
@@ -58,7 +61,8 @@ review_chain = LLMChain(llm=llm, prompt=prompt2, output_key='review', verbose=Tr
 
 generate_evaluate_chain = SequentialChain(
     chains=[chain, review_chain],
-    input_variables=['text', 'number', 'subject', 'tone', 'RESPONSE_JSON'],
+    input_variables=['text', 'number', 'subject', 'tone', 'response_json'],
     output_variables=['quiz', 'review'],
     verbose=True)
+
 

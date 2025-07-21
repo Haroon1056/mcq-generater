@@ -1,36 +1,35 @@
-{
-    "1":{
-        "no": 1,
-        "question": "multiple choice question",
-        "options": {
-            "a": "option a",
-            "b": "option b",
-            "c": "option c",
-            "d": "option d"
-        },
-        "answer": "a"
+[
+  {
+    "no": 1,
+    "question": "multiple choice question",
+    "options": {
+      "a": "option a",
+      "b": "option b",
+      "c": "option c",
+      "d": "option d"
     },
-    "2":{
-        "no": 2,
-        "question": "multiple choice question",
-        "options": {
-            "a": "option a",
-            "b": "option b",
-            "c": "option c",
-            "d": "option d"
-        },
-        "answer": "a"
+    "answer": "a"
+  },
+  {
+    "no": 2,
+    "question": "multiple choice question",
+    "options": {
+      "a": "option a",
+      "b": "option b",
+      "c": "option c",
+      "d": "option d"
     },
-    "3":{
-        "no": 3,
-        "question": "multiple choice question",
-        "options": {
-            "a": "option a",
-            "b": "option b",
-            "c": "option c",
-            "d": "option d"
-        },
-        "answer": "a"
-    }
-    
-}
+    "answer": "a"
+  },
+  {
+    "no": 3,
+    "question": "multiple choice question",
+    "options": {
+      "a": "option a",
+      "b": "option b",
+      "c": "option c",
+      "d": "option d"
+    },
+    "answer": "a"
+  }
+]

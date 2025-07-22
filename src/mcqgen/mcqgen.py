@@ -16,7 +16,10 @@ load_dotenv()
 key = os.getenv("GROQ_API_TOKEN")
 print(key)
 
-with open("C:\\Users\\Z\\Desktop\\End-to-End-Project\\mcqgen-project\\mcq-generater\\Response.json", "r") as file:
+import os
+
+file_path = os.path.join(os.path.dirname(__file__), '..', '..', 'Response.json')
+with open(file_path, 'r') as file:
     response_json = json.load(file)
 # print(response_json)
 
